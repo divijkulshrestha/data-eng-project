@@ -53,7 +53,6 @@ def get_last_hour_files():
     urlretrieve(file2, "file2.zip")
     urlretrieve(file1, "file1.zip")
     urlretrieve(file0, "file0.zip")
-    #print("Files downloaded!")
 
     with open(source_file, 'w') as file:
         file.write(f"{timestamp0.strftime('%Y%m%d%H%M%S')}.export.CSV"+'\n')
@@ -73,20 +72,17 @@ def read_last_hour_files():
 
     with zipfile.ZipFile(zip_file_path+'file0.zip', 'r') as zip_ref:
         zip_ref.extract(lines[0].strip(), path=".")
-    #print(lines[0])
 
     with zipfile.ZipFile(zip_file_path+'file1.zip', 'r') as zip_ref:
         zip_ref.extract(lines[1].strip(), path=".")
-    #print(lines[1])
 
     with zipfile.ZipFile(zip_file_path+'file2.zip', 'r') as zip_ref:
         zip_ref.extract(lines[2].strip(), path=".")
-    #print(lines[2])
 
     with zipfile.ZipFile(zip_file_path+'file3.zip', 'r') as zip_ref:
         zip_ref.extract(lines[3].strip(), path=".")
-    #print(lines[3])
 
+    # header names for GDELT V2.0 
     column_names =['GLOBALEVENTID', 'SQLDATE', 'MonthYear', 'Year', 'FractionDate', 'Actor1Code', 'Actor1Name', 'Actor1CountryCode', 'Actor1KnownGroupCode', 
     'Actor1EthnicCode', 'Actor1Religion1Code', 'Actor1Religion2Code', 'Actor1Type1Code', 'Actor1Type2Code', 'Actor1Type3Code', 'Actor2Code', 'Actor2Name', 
     'Actor2CountryCode', 'Actor2KnownGroupCode', 'Actor2EthnicCode', 'Actor2Religion1Code', 'Actor2Religion2Code', 'Actor2Type1Code', 'Actor2Type2Code', 'Actor2Type3Code', 
@@ -100,6 +96,11 @@ def read_last_hour_files():
     # concat the CSV files and generate a single parquet file
     df_csv_concat = pd.concat([pd.read_csv(file.strip(), delimiter='\t', header=None, names=column_names) for file in lines], ignore_index=True)
     df_csv_concat.to_parquet(source_pq, index=False)
+
+    #delete files to clear space
+    for file in lines:
+        remove_file(file)
+    remove_file(source_file)
    
 def str_to_date(datetime_str): 
     datetime_object = datetime.strptime(datetime_str, '%Y%m%d%H%M%S')
