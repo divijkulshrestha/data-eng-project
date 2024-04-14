@@ -23,7 +23,7 @@ BIGQUERY_DATASET = "gdelt2_dataset"
 path_to_local_home = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
 
 last_url = "http://data.gdeltproject.org/gdeltv2/lastupdate.txt"
-file_name = "gdelt_data.txt"
+source_file = "gdelt_data.txt"
 source_pq = "gdelt_data.parquet"
 
 def get_last_hour_files():
@@ -68,7 +68,7 @@ def read_last_hour_files():
     f = open(source_file, "r")
     lines = f.readlines()
 
-    zip_file_path = "C:/Users/Anantk/AppData/Local/Programs/Python/Python311/"
+    zip_file_path = "./"
     df_csv_append = pd.DataFrame()
 
     with zipfile.ZipFile(zip_file_path+'file0.zip', 'r') as zip_ref:
@@ -140,7 +140,7 @@ with DAG(
     tags=['dtc-de'],
 ) as dag:
 
-    download_dataset_task = BashOperator(
+    download_dataset_task = PythonOperator(
         task_id="download_dataset_task",
         python_callable=get_last_hour_files
     )
