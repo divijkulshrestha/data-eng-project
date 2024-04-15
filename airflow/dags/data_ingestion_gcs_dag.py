@@ -172,8 +172,8 @@ with DAG(
         },
     )
 
-    bq_to_gcs_task = GCSToBigQueryOperator(
-    task_id = "bq_to_gcs_task",
+    gcs_to_bq_task = GCSToBigQueryOperator(
+    task_id = "gcs_to_bq_task",
     bucket = BUCKET,
     source_objects = f"raw/{source_pq}",
     destination_project_dataset_table = f'{PROJECT_ID}:{BIGQUERY_DATASET}.{STG_TABLE}',
@@ -183,4 +183,4 @@ with DAG(
     skip_leading_rows = 1       
     )
 
-    download_dataset_task >> prepare_parquet_task >> local_to_gcs_task >> bq_to_gcs_task
+    download_dataset_task >> prepare_parquet_task >> local_to_gcs_task >> gcs_to_bq_task
