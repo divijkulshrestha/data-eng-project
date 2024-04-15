@@ -183,7 +183,7 @@ with DAG(
     skip_leading_rows = 1       
     )
 
-    bigquery_external_table_task = BigQueryCreateExternalTableOperator(
+    """bigquery_external_table_task = BigQueryCreateExternalTableOperator(
         task_id="bigquery_external_table_task",
         table_resource={
             "tableReference": {
@@ -196,6 +196,6 @@ with DAG(
                 "sourceUris": [f"gs://{BUCKET}/raw/{source_pq}"],
             },
         },
-    )
+    )"""
 
     download_dataset_task >> prepare_parquet_task >> local_to_gcs_task >> bq_to_gcs_task
