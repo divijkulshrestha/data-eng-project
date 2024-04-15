@@ -15,10 +15,14 @@ from airflow.operators.python import PythonOperator
 
 from google.cloud import storage
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
+from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
+#from airflow.contrib.operators.big_query_operator import BigQueryOperator
+
 
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 BUCKET = os.environ.get("GCP_GCS_BUCKET")
 BIGQUERY_DATASET = "gdelt2_dataset"
+STG_TABLE = "events_stg"
 
 path_to_local_home = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
 
@@ -59,7 +63,7 @@ def get_last_hour_files():
         file.write(f"{timestamp1.strftime('%Y%m%d%H%M%S')}.export.CSV"+'\n')
         file.write(f"{timestamp2.strftime('%Y%m%d%H%M%S')}.export.CSV"+'\n')        
         file.write(f"{timestamp3.strftime('%Y%m%d%H%M%S')}.export.CSV"+'\n')
-        
+
 def read_last_hour_files():
     """
     Function to extract the CSV files and generate a single source file.
@@ -99,7 +103,7 @@ def read_last_hour_files():
 
     #delete files to clear space
     for file in lines:
-        remove_file(file)
+        remove_file(file.strip())
     remove_file(source_file)
    
 def str_to_date(datetime_str): 
@@ -168,6 +172,17 @@ with DAG(
         },
     )
 
+    bq_to_gcs_task = GCSToBigQueryOperator(
+    task_id = "bq_to_gcs_task",
+    bucket = BUCKET,
+    source_objects = f"raw/{source_pq}",
+    destination_project_dataset_table = f'{PROJECT_ID}:{BIGQUERY_DATASET}.{STG_TABLE}',
+    create_disposition='CREATE_IF_NEEDED',
+    write_disposition='WRITE_APPEND',
+    source_format = 'parquet',
+    skip_leading_rows = 1       
+    )
+
     bigquery_external_table_task = BigQueryCreateExternalTableOperator(
         task_id="bigquery_external_table_task",
         table_resource={
@@ -183,4 +198,4 @@ with DAG(
         },
     )
 
-    download_dataset_task >> prepare_parquet_task >> local_to_gcs_task >> bigquery_external_table_task
+    download_dataset_task >> prepare_parquet_task >> local_to_gcs_task >> bq_to_gcs_task
