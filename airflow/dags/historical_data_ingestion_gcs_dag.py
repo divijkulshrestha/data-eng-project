@@ -215,4 +215,4 @@ with DAG(
     skip_leading_rows = 1       
     )
 
-   create_table_task >> prepare_dataset_task >> local_to_gcs_task >> gcs_to_bq_task
+    create_table_task >> prepare_dataset_task >> local_to_gcs_task >> gcs_to_bq_task
