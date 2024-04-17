@@ -16,6 +16,7 @@ from airflow.operators.python import PythonOperator
 from google.cloud import storage
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
+from airflow.contrib.operators.bigquery_operator import BigQueryCreateEmptyTableOperator
 
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 BUCKET = os.environ.get("GCP_GCS_BUCKET")

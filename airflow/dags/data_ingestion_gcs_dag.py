@@ -17,6 +17,7 @@ from google.cloud import storage
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 #from airflow.contrib.operators.big_query_operator import BigQueryOperator
+#from airflow.contrib.operators.bigquery_operator import BigQueryCreateEmptyTableOperator
 
 
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
@@ -72,7 +73,6 @@ def read_last_hour_files():
     lines = f.readlines()
 
     zip_file_path = "./"
-    df_csv_append = pd.DataFrame()
 
     with zipfile.ZipFile(zip_file_path+'file0.zip', 'r') as zip_ref:
         zip_ref.extract(lines[0].strip(), path=".")
@@ -94,8 +94,6 @@ def read_last_hour_files():
     'Actor1Geo_FullName', 'Actor1Geo_CountryCode', 'Actor1Geo_ADM1Code', 'Actor1Geo_ADM2Code', 'Actor1Geo_Lat', 'Actor1Geo_Long', 'Actor1Geo_FeatureID', 'Actor2Geo_Type', 
     'Actor2Geo_FullName', 'Actor2Geo_CountryCode', 'Actor2Geo_ADM1Code', 'Actor2Geo_ADM2Code', 'Actor2Geo_Lat', 'Actor2Geo_Long', 'Actor2Geo_FeatureID', 'ActionGeo_Type', 
     'ActionGeo_FullName', 'ActionGeo_CountryCode', 'ActionGeo_ADM1Code', 'ActionGeo_ADM2Code', 'ActionGeo_Lat', 'ActionGeo_Long', 'ActionGeo_FeatureID', 'DATEADDED', 'SOURCEURL']
-
-    df_csv_append = pd.DataFrame()
              
     # concat the CSV files and generate a single parquet file
     df_csv_concat = pd.concat([pd.read_csv(file.strip(), delimiter='\t', header=None, names=column_names) for file in lines], ignore_index=True)
