@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: staging
+    database: divij-zoomcamp-2024
+    schema: gdelt2_dataset
+    tables:
+      - name: events_stg
