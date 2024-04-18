@@ -46,6 +46,7 @@ airflow/dags/one_time_load_bigquery_load.py
 
 airflow/dags/data_ingestion_bigquery_load.py
 
+[screenshot](https://imgur.com/a/hb2X3pD)
 
 ### Transformation Layer -- WIP
 
