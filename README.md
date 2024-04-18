@@ -8,7 +8,8 @@ This is a data engineering project that will use the following tools:
 2. Google Cloud Platform
 2. Apache Airflow
 4. Google BigQuery
-5. dbt and/or Spark
+5. DBT Cloud
+6. Looker
 
 # About the data source
 
@@ -25,8 +26,6 @@ To learn more about the GDELT Project and the data they make available for us to
 3. Populate EVENTS_STG staging table in our data warehouse 
 4. Process the data and apply transformations using DBT
 5. Visualize the final dataset in the form of a dashboard
-
-As of the latest commit, we are at step 3 and step 4 (dbt) is incomplete.
 
 ### Using Terraform (IaC)
 We can run the Terraform config scripts and create Google Cloud Storage (GCS) bucket which will serve as a data lake for our project. Raw source files will be loaded here, ready to be ingested into Google BiqQuery. 
@@ -48,17 +47,22 @@ airflow/dags/data_ingestion_bigquery_load.py
 
 [screenshot](https://imgur.com/a/hb2X3pD)
 
-### Transformation Layer -- WIP
+### Transformation Layer (Currently Testing in DBT Cloud)
 
 Using dbt, we plan to transform the data from EVENTS_STG and load the final provisioning table, EVENTS_FINAL. 
 
-This is currently a Work in Progress (WIP).
+EVENTS_FINAL model is created that transforms the data and keeps the key fields necessary for our visualization.
 
-### Dashboard -- WIP
+Pending enhancements:
+a) Separate lookup table with CAMEO codes to identify the global actors involved would be helpful as we can use this and join with the GDELT dataset and get more insight into whether the actor is a country, state, person, organisation or other entity. 
+b) Scheduled dbt jobs need to be set up (currently is manual as of latest commit) for the dashboard to be built on top of latest data
+c) Include Spark for other transfomations(?)
 
-Using Google Looker studio, we should be able to derive insights and create a dashboard to visualize the events data. 
+### Dashboard (Work in Progress)
 
-Possible Visualizations:
+Using Looker Studio, we should be able to derive insights and create a dashboard to visualize the events data. 
+
+Possible Visualizations (pending):
 1. Using geodata, a global map of incidents (arrests, killings, disasters, elections) 
 2. Country-wise breakdown of events
 3. Occurence of incidents over time (such as terrorist acts)
