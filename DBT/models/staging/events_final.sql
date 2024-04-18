@@ -1,5 +1,5 @@
+--Test Run Using: dbt build --events_final --vars '{'is_test_run': 'true'}'
 with 
-
 source as (
 
     select * from {{ source('staging', 'events_stg') }}
@@ -10,7 +10,7 @@ renamed as (
 
     select
         globaleventid,
-        sqldate,
+        PARSE_DATE('%Y%m%d', CAST(sqldate AS STRING)) as sqldate, --convert integer to date
         monthyear,
         year,
         fractiondate,
@@ -68,7 +68,7 @@ renamed as (
         actiongeo_lat,
         actiongeo_long,
         actiongeo_featureid,
-        dateadded,
+        PARSE_DATETIME('%Y%m%d%H%M%S', CAST(dateadded AS STRING)) as dateadded, --convert integer to datetime
         sourceurl
 
     from source
@@ -76,3 +76,9 @@ renamed as (
 )
 
 select * from renamed
+
+{% if var('is_test_run', default=true) %}
+
+  limit 10
+
+{% endif %}
