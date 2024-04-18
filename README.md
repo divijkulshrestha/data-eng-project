@@ -58,8 +58,11 @@ Using dbt, we plan to transform the data from EVENTS_STG and load the final prov
 EVENTS_FINAL model is created that transforms the data and keeps the key fields necessary for our visualization.
 
 Pending enhancements:
+
 a) Separate lookup table with CAMEO codes to identify the global actors involved would be helpful as we can use this and join with the GDELT dataset and get more insight into whether the actor is a country, state, person, organisation or other entity. 
+
 b) Scheduled dbt jobs need to be set up (currently is manual as of latest commit) for the dashboard to be built on top of latest data
+
 c) Include Spark for other transfomations(?)
 
 ### Dashboard (Work in Progress)
