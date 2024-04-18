@@ -1,4 +1,4 @@
---Test Run Using: dbt build --events_final --vars '{'is_test_run': 'true'}'
+--Test Run Using: dbt build --select events_final --vars '{'is_test_run': 'true'}'
 with 
 source as (
 
