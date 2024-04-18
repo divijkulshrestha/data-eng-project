@@ -46,7 +46,9 @@ airflow/dags/one_time_load_bigquery_load.py
 airflow/dags/data_ingestion_bigquery_load.py
 
 [screenshot - my DAGs](https://imgur.com/a/hb2X3pD)
+
 [screenshot - DAG Trees](https://imgur.com/a/BoStxaZ)
+
 [screenshot - GCP](https://imgur.com/a/yzEd99a)
 
 ### Transformation Layer (Currently Testing in DBT Cloud)
