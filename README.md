@@ -1,7 +1,7 @@
 # Visualizing Events from All Over the Globe
 ## An End-to-End Data Pipeline
 
-The goal of this project is to create and End-to-End batch pipeline, pointing to the GDELT V2.0 data source for all the latest global headlines, and processing this data into the form of a helpful dashboard. 
+The goal of this project is to create an End-to-End batch pipeline, pointing to the GDELT V2.0 data source for all the latest global headlines, and processing this data into the form of a helpful dashboard. 
 
 This is a data engineering project that will use the following tools:
 1. Terraform
