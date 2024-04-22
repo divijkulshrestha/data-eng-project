@@ -63,7 +63,7 @@ a) Separate lookup table with CAMEO codes to identify the global actors involved
 
 b) Scheduled dbt jobs need to be set up (currently is manual as of latest commit) for the dashboard to be built on top of latest data
 
-c) Include Spark for other transfomations(?)
+c) Include Spark for other transformations(?)
 
 ### Dashboard (Work in Progress)
 
