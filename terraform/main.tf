@@ -14,7 +14,7 @@ provider "google" {
 }
 
 
-resource "google_storage_bucket" "demo-bucket" {
+resource "google_storage_bucket" "data-lake-bucket" {
   name          = var.gcs_bucket_name
   location      = var.location
   force_destroy = true
@@ -32,7 +32,27 @@ resource "google_storage_bucket" "demo-bucket" {
 
 
 
-resource "google_bigquery_dataset" "demo_dataset" {
+resource "google_bigquery_dataset" "bq_dataset" {
   dataset_id = var.bq_dataset_name
   location   = var.location
+}
+
+resource "google_bigquery_table" "staging_table" {
+ project             = var.project
+ dataset_id          = var.bq_dataset_name
+ table_id            = "gdelt_events_stg"
+ deletion_protection = false
+ depends_on = [
+    google_bigquery_dataset.bq_dataset,
+  ]
+
+ schema = file(var.stage_schema)
+
+ #time_partitioning {
+ #  type  = "DAY"
+ #  field = "SQLDATE"
+# }
+
+ clustering = ["Year"]
+
 }

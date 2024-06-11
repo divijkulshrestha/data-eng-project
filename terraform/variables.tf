@@ -32,3 +32,8 @@ variable "gcs_storage_class" {
   description = "Bucket Storage Class"
   default     = "STANDARD"
 }
+
+variable "stage_schema" {
+default="stage_schema.json"
+
+}
