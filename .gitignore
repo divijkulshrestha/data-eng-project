@@ -1,2 +1,3 @@
 airflow/logs/*
 airflow/dags/__pycache__/*
+airflow/.env
