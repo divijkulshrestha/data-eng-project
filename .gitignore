@@ -1,3 +1,3 @@
-airflow/logs/*
-airflow/dags/__pycache__/*
-airflow/.env
+airflow_new/logs/*
+airflow_new/dags/__pycache__/*
+airflow_new/.env
