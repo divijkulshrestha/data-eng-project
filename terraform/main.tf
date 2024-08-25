@@ -30,8 +30,6 @@ resource "google_storage_bucket" "data-lake-bucket" {
   }
 }
 
-
-
 resource "google_bigquery_dataset" "bq_dataset" {
   dataset_id = var.bq_dataset_name
   location   = var.location
@@ -40,19 +38,59 @@ resource "google_bigquery_dataset" "bq_dataset" {
 resource "google_bigquery_table" "staging_table" {
  project             = var.project
  dataset_id          = var.bq_dataset_name
- table_id            = "gdelt_events_stg"
+ table_id            = var.bq_stage_table
  deletion_protection = false
  depends_on = [
     google_bigquery_dataset.bq_dataset,
   ]
 
- schema = file(var.stage_schema)
+ schema = file(var.bq_stage_table_schema)
 
- #time_partitioning {
- #  type  = "DAY"
- #  field = "SQLDATE"
-# }
+ /*time_partitioning {
+  # type  = "DAY"
+   #field = "MonthYear"
+ }
 
- clustering = ["Year"]
+ clustering = ["Year","EventCode"]
+*/
+}
+
+
+resource "google_bigquery_table" "lookup_table1" {
+ project             = var.project
+ dataset_id          = var.bq_dataset_name
+ table_id            = var.bq_actor_type_lookup
+ deletion_protection = false
+ depends_on = [
+    google_bigquery_dataset.bq_dataset,
+  ]
+
+  schema = file(var.bq_lookup_table_schema)
+
+}
+
+resource "google_bigquery_table" "lookup_table2" {
+ project             = var.project
+ dataset_id          = var.bq_dataset_name
+ table_id            = var.bq_country_code_lookup
+ deletion_protection = false
+ depends_on = [
+    google_bigquery_dataset.bq_dataset,
+  ]
+
+  schema = file(var.bq_lookup_table_schema)
+
+}
+
+resource "google_bigquery_table" "lookup_table3" {
+ project             = var.project
+ dataset_id          = var.bq_dataset_name
+ table_id            = var.bq_event_code_lookup
+ deletion_protection = false
+ depends_on = [
+    google_bigquery_dataset.bq_dataset,
+  ]
+
+  schema = file(var.bq_lookup_table_schema)
 
 }

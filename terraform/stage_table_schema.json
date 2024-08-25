@@ -1,0 +1,17 @@
+[
+    {"name":"GLOBALEVENTID", "type": "INTEGER", "mode": "REQUIRED"},
+    {"name":"MonthYear", "type": "INTEGER", "mode": "NULLABLE"},
+    {"name":"Year", "type": "INTEGER", "mode": "NULLABLE"},
+    {"name":"EventTimestamp", "type": "DATETIME", "mode": "NULLABLE"},
+    {"name":"EventCode", "type": "INTEGER", "mode": "NULLABLE"},    
+    {"name":"Actor1Code", "type": "STRING", "mode": "NULLABLE"},
+    {"name":"Actor1Name", "type": "STRING", "mode": "NULLABLE"},
+    {"name":"Actor1CountryCode", "type": "STRING", "mode": "NULLABLE"},
+    {"name":"Actor1Type1Code", "type": "STRING", "mode": "NULLABLE"},
+    {"name":"Actor1Type2Code", "type": "STRING", "mode": "NULLABLE"},
+    {"name":"Actor2Code", "type": "STRING", "mode": "NULLABLE"},
+    {"name":"Actor2Name", "type": "STRING", "mode": "NULLABLE"},
+    {"name":"Actor2CountryCode", "type": "STRING", "mode": "NULLABLE"},
+    {"name":"Actor2Type1Code", "type": "STRING", "mode": "NULLABLE"},
+    {"name":"Actor2Type2Code", "type": "STRING", "mode": "NULLABLE"}
+    ]

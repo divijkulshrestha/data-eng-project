@@ -1,0 +1,4 @@
+[
+    {"name":"CAMEOEVENTCODE", "type": "INTEGER", "mode": "REQUIRED"},
+    {"name":"LABEL", "type": "STRING", "mode": "NULLABLE"}
+    ]
