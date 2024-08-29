@@ -14,8 +14,8 @@ from airflow.operators.python import PythonOperator
 from google.cloud import storage
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
-from airflow.contrib.operators.big_query_operator import BigQueryOperator
-from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
+#from airflow.contrib.operators.big_query_operator import BigQueryOperator
+from airflow.providers.google.cloud.operators.bigquery import BigQueryExecuteQueryOperator
 
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 BUCKET = os.environ.get("GCP_GCS_BUCKET")
@@ -24,7 +24,13 @@ BIGQUERY_DATASET = "data_eng_project"
 path_to_local_home = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
 
 query = """
-test
+SELECT DISTINCT GLOBALEVENTID, _PARTITIONTIME as EventTimestamp, MonthYear, Year, EventCode, Actor1CountryCode, Actor2CountryCode, 
+     Actor1Type1Code, Actor2Type1Code 
+      FROM `gdelt-bq.gdeltv2.events_partitioned`
+      WHERE 
+      EXTRACT(YEAR FROM (TIMESTAMP_TRUNC(_PARTITIONTIME, DAY))) = 2024  
+      AND EventRootCode='18' 
+      AND IsRootEvent=1
 """
 
 def get_lookup_files():
@@ -159,22 +165,15 @@ with DAG(
     skip_leading_rows = 1       
     )
 
-    load_events_stg_task = BigQueryInsertJobOperator(
+    load_events_stg_task = BigQueryExecuteQueryOperator(
         task_id='load_events_stg_task',
-        configuration={
-            "query": {
-                "query": query,
-                "useLegacySql": False,
-                "destinationTable": {
-                    "projectId": f'{PROJECT_ID}',
-                    "datasetId": f'{BIGQUERY_DATASET}',
-                    "tableId": "events_stg",
-                },
-                "writeDisposition": "WRITE_TRUNCATE", 
-            }
-        },
-        gcp_conn_id='google_cloud_default',  # CHANGE THIS
-        location='asia-south1'
+        sql=query,
+        destination_dataset_table=f'{PROJECT_ID}:{BIGQUERY_DATASET}.{"events_stg"}',
+        write_disposition='WRITE_TRUNCATE',  
+        use_legacy_sql=False  
     )
 
-    load_events_stg_task >> download_data_task >> prepare_csv_task >> load_country_codes_task >> load_event_codes_task >> load_type_codes_task >> load_country_codes_bq_task >> load_event_codes_bq_task >> load_type_codes_bq_task
+    load_events_stg_task >> download_data_task >> prepare_csv_task >> [load_country_codes_task, load_event_codes_task, load_type_codes_task] 
+    load_country_codes_task >> load_country_codes_bq_task
+    load_event_codes_task >> load_event_codes_bq_task
+    load_type_codes_task >> load_type_codes_bq_task
