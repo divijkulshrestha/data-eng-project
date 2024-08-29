@@ -52,12 +52,15 @@ def convert_to_csv():
     Function to convert the TXT files and generate CSV files
     """    
     df = pd.read_csv('country_codes.txt', delimiter='\t', header = 0) 
+    df.columns = ['CODE', 'LABEL']
     df.to_csv('country_codes.csv', index=False)
 
     df = pd.read_csv('event_codes.txt', delimiter='\t', header = 0) 
+    df.columns = ['CODE', 'LABEL']
     df.to_csv('event_codes.csv', index=False)
 
     df = pd.read_csv('type_codes.txt', delimiter='\t', header = 0) 
+    df.columns = ['CODE', 'LABEL']
     df.to_csv('type_codes.csv', index=False)
 
 
@@ -107,7 +110,7 @@ with DAG(
         python_callable=upload_to_gcs,
         op_kwargs={
             "bucket": BUCKET,
-            "object_name": f"raw/country_codes.csv",
+            "object_name": "country_codes.csv",
             "local_file": "country_codes.csv",
         },
     )
@@ -117,7 +120,7 @@ with DAG(
         python_callable=upload_to_gcs,
         op_kwargs={
             "bucket": BUCKET,
-            "object_name": f"raw/event_codes.csv",
+            "object_name": "event_codes.csv",
             "local_file": "event_codes.csv",
         },
     )
@@ -127,7 +130,7 @@ with DAG(
         python_callable=upload_to_gcs,
         op_kwargs={
             "bucket": BUCKET,
-            "object_name": f"raw/type_codes.csv",
+            "object_name": "type_codes.csv",
             "local_file": "type_codes.csv",
         },
     )
@@ -135,34 +138,34 @@ with DAG(
     load_country_codes_bq_task = GCSToBigQueryOperator(
     task_id = "load_country_codes_bq_task",
     bucket = BUCKET,
-    source_objects = f"raw/country_codes.csv",
+    source_objects = "country_codes.csv",
     destination_project_dataset_table = f'{PROJECT_ID}:{BIGQUERY_DATASET}.{"country_codes"}',
     create_disposition='CREATE_IF_NEEDED',
     write_disposition='WRITE_APPEND',
     source_format = 'csv',
-    skip_leading_rows = 1       
+    skip_leading_rows = 1    
     )
 
     load_event_codes_bq_task = GCSToBigQueryOperator(
     task_id = "load_event_codes_bq_task",
     bucket = BUCKET,
-    source_objects = f"raw/event_codes.csv",
+    source_objects = "event_codes.csv",
     destination_project_dataset_table = f'{PROJECT_ID}:{BIGQUERY_DATASET}.{"event_codes"}',
     create_disposition='CREATE_IF_NEEDED',
     write_disposition='WRITE_APPEND',
     source_format = 'csv',
-    skip_leading_rows = 1       
+    skip_leading_rows = 1      
     )
 
     load_type_codes_bq_task = GCSToBigQueryOperator(
     task_id = "load_type_codes_bq_task",
     bucket = BUCKET,
-    source_objects = f"raw/type_codes.csv",
+    source_objects = "type_codes.csv",
     destination_project_dataset_table = f'{PROJECT_ID}:{BIGQUERY_DATASET}.{"type_codes"}',
     create_disposition='CREATE_IF_NEEDED',
     write_disposition='WRITE_APPEND',
     source_format = 'csv',
-    skip_leading_rows = 1       
+    skip_leading_rows = 1     
     )
 
     load_events_stg_task = BigQueryExecuteQueryOperator(
@@ -172,6 +175,7 @@ with DAG(
         write_disposition='WRITE_TRUNCATE',  
         use_legacy_sql=False  
     )
+
 
     load_events_stg_task >> download_data_task >> prepare_csv_task >> [load_country_codes_task, load_event_codes_task, load_type_codes_task] 
     load_country_codes_task >> load_country_codes_bq_task
