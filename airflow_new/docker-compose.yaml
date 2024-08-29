@@ -19,7 +19,7 @@ x-airflow-common:
     GOOGLE_APPLICATION_CREDENTIALS: /.google/credentials/google_credentials.json
     AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: 'google-cloud-platform://?extra__google_cloud_platform__key_path=/.google/credentials/google_credentials.json'
     GCP_PROJECT_ID: 'divij-zoomcamp-2024'
-    GCP_GCS_BUCKET: "divij-zoomcamp-2024-gcs-bucket"
+    GCP_GCS_BUCKET: "lookup_files"
 
   volumes:
     - ./dags:/opt/airflow/dags
