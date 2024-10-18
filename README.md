@@ -51,27 +51,23 @@ airflow/dags/data_ingestion_bigquery_load.py
 
 [screenshot - GCP](https://imgur.com/a/yzEd99a)
 
-### Transformation Layer (Currently Testing in DBT Cloud)
+### Transformation Layer using DBT Cloud
 
-Using dbt, we plan to transform the data from EVENTS_STG and load the final provisioning table, EVENTS_FINAL. 
+Using dbt, we then transform the data from EVENTS_STG and load the final provisioning table, EVENTS_FINAL. This includes lookup for CAMEO codes (country code, actor type codes and event codes) and datatype conversions. The final table contains only the key columns we are interested in, and can be further used as the data source for our visualizations.
 
-EVENTS_FINAL model is created that transforms the data and keeps the key fields necessary for our visualization.
+### Dashboard using Looker Studio
 
-Pending enhancements:
+Using Looker Studio, we should are able to derive insights and create a dashboard to visualize the events data. 
 
-a) Separate lookup table with CAMEO codes to identify the global actors involved would be helpful as we can use this and join with the GDELT dataset and get more insight into whether the actor is a country, state, person, organisation or other entity. 
+Here is an example dashboard that breaks down the Violent Events of 2024 (so far):
 
-b) Scheduled dbt jobs need to be set up (currently is manual as of latest commit) for the dashboard to be built on top of latest data
+![image](https://github.com/user-attachments/assets/1a05f703-3ea6-44b5-ad1e-025f3b94f845)
 
-c) Include Spark for other transformations(?)
 
-### Dashboard (Work in Progress)
+![image](https://github.com/user-attachments/assets/7d5409be-b588-4986-8bec-8a96b3a0cbef)
 
-Using Looker Studio, we should be able to derive insights and create a dashboard to visualize the events data. 
 
-Possible Visualizations (pending):
-1. Using geodata, a global map of incidents (arrests, killings, disasters, elections) 
-2. Country-wise breakdown of events
-3. Occurence of incidents over time (such as terrorist acts)
-
-An insightful dashboard that is updated with latest GDELT data using schedule batch jobs is the end goal of the project. 
+### Potential Enhancements :
+1. Using Geospatial data to map out the occurences of the events
+2. Including Apache Spark in the transformation layer
+3. Scheduling NRT jobs to run periodically and keep the Looker dashboard up-to-date 
