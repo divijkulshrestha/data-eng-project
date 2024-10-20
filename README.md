@@ -27,6 +27,9 @@ To learn more about the GDELT Project and the data they make available for us to
 4. Process the data and apply transformations using DBT
 5. Visualize the final dataset in the form of a dashboard
 
+![Project Architecture](https://github.com/user-attachments/assets/68c25852-a74c-49de-b69a-c268672cc105)
+
+
 ### Using Terraform (IaC)
 We can run the Terraform config scripts and create Google Cloud Storage (GCS) bucket which will serve as a data lake for our project. Raw source files will be loaded here, ready to be ingested into Google BiqQuery. 
 
